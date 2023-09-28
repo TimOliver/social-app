@@ -57,7 +57,7 @@ module.exports = function (_config) {
       primaryColor: '#006AFF',
       newArchEnabled: false,
       ios: {
-        supportsTablet: false,
+        supportsTablet: true,
         bundleIdentifier: 'xyz.blueskyweb.app',
         config: {
           usesNonExemptEncryption: false,
