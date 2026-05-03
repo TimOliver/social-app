@@ -1,5 +1,5 @@
 import {useMemo, useRef} from 'react'
-import {type DimensionValue, Pressable, View} from 'react-native'
+import {Pressable, View} from 'react-native'
 import Animated, {
   type AnimatedRef,
   useAnimatedRef,
@@ -17,7 +17,11 @@ import {atoms as a, useTheme, web} from '#/alf'
 import {ArrowsDiagonalOut_Stroke2_Corner0_Rounded as Fullscreen} from '#/components/icons/ArrowsDiagonal'
 import {MediaInsetBorder} from '#/components/MediaInsetBorder'
 import {Text} from '#/components/Typography'
-import {IS_NATIVE} from '#/env'
+import {IS_IPAD, IS_NATIVE} from '#/env'
+
+// Caps post media (images, videos) to a comfortable size on iPad rather
+// than letting them stretch edge-to-edge.
+const IPAD_MEDIA_MAX_HEIGHT = 320
 
 export function ConstrainedImage({
   aspectRatio,
@@ -32,19 +36,26 @@ export function ConstrainedImage({
 }) {
   const t = useTheme()
   /**
-   * Computed as a % value to apply as `paddingTop`, this basically controls
-   * the height of the image.
+   * Width-to-height ratio of the outer container. Yoga's `aspectRatio` style
+   * is used directly here (instead of the older `paddingTop: '%'` trick) so
+   * that `maxHeight` actually clamps the box on iPad.
    */
-  const outerAspectRatio = useMemo<DimensionValue>(() => {
-    const ratio = IS_NATIVE
+  const containerAspectRatio = useMemo(() => {
+    const heightOverWidth = IS_NATIVE
       ? Math.min(1 / aspectRatio, minMobileAspectRatio ?? 16 / 9) // 9:16 bounding box
       : Math.min(1 / aspectRatio, 1) // 1:1 bounding box
-    return `${ratio * 100}%`
+    return 1 / heightOverWidth
   }, [aspectRatio, minMobileAspectRatio])
 
   return (
     <View style={[a.w_full]}>
-      <View style={[a.overflow_hidden, {paddingTop: outerAspectRatio}]}>
+      <View
+        style={[
+          a.w_full,
+          a.overflow_hidden,
+          {aspectRatio: containerAspectRatio},
+          IS_IPAD && {maxHeight: IPAD_MEDIA_MAX_HEIGHT},
+        ]}>
         <View style={[a.absolute, a.inset_0, a.flex_row]}>
           <View
             style={[
@@ -216,6 +227,7 @@ export function AutoSizedImage({
           a.overflow_hidden,
           t.atoms.bg_contrast_25,
           {aspectRatio: max ?? 1},
+          IS_IPAD && {maxHeight: IPAD_MEDIA_MAX_HEIGHT},
           web([
             a.transition_transform,
             {transitionDuration: '200ms'},
