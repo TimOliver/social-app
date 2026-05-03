@@ -5,10 +5,12 @@ import {
   View,
   type ViewStyle,
 } from 'react-native'
+import {LinearGradient} from 'expo-linear-gradient'
 import {msg} from '@lingui/core/macro'
 import {useLingui} from '@lingui/react'
 
 import {useNonReactiveCallback} from '#/lib/hooks/useNonReactiveCallback'
+import {useReadableContentInsets} from '#/lib/hooks/useReadableContentInsets'
 import {DraggableScrollView} from '#/view/com/pager/DraggableScrollView'
 import {atoms as a, tokens, useTheme, web} from '#/alf'
 import {transparentifyColor} from '#/alf/util/colorGeneration'
@@ -19,6 +21,9 @@ import {
 } from '#/components/icons/Arrow'
 import {Text} from '#/components/Typography'
 import {IS_WEB} from '#/env'
+
+const GRADIENT_FADE_WIDTH = 45
+const GRADIENT_FADE_INSET = 12
 
 /**
  * Tab component that automatically scrolls the selected tab into view - used for interests
@@ -46,6 +51,10 @@ export function InterestTabs({
 }) {
   const t = useTheme()
   const {_} = useLingui()
+  const insets = useReadableContentInsets()
+  const hasInset = insets.left > 0 || insets.right > 0
+  const bgOpaque = t.atoms.bg.backgroundColor
+  const bgTransparent = transparentifyColor(bgOpaque, 0)
   const listRef = useRef<ScrollView>(null)
   const [totalWidth, setTotalWidth] = useState(0)
   const [scrollX, setScrollX] = useState(0)
@@ -199,12 +208,22 @@ export function InterestTabs({
   }, [])
 
   return (
-    <View style={[a.relative, a.flex_row]}>
+    <View
+      style={[
+        a.relative,
+        a.flex_row,
+        hasInset && {marginLeft: -insets.left, marginRight: -insets.right},
+      ]}>
       <DraggableScrollView
         ref={listRef}
         contentContainerStyle={[
           a.gap_sm,
-          {paddingHorizontal: gutterWidth},
+          hasInset
+            ? {
+                paddingLeft: gutterWidth + insets.left,
+                paddingRight: gutterWidth + insets.right,
+              }
+            : {paddingHorizontal: gutterWidth},
           contentContainerStyle,
         ]}
         showsHorizontalScrollIndicator={false}
@@ -236,6 +255,50 @@ export function InterestTabs({
           )
         })}
       </DraggableScrollView>
+      {insets.left >= GRADIENT_FADE_WIDTH && (
+        <>
+          <LinearGradient
+            pointerEvents="none"
+            colors={[bgOpaque, bgOpaque, bgTransparent]}
+            locations={[
+              0,
+              1 - GRADIENT_FADE_WIDTH / (insets.left + GRADIENT_FADE_INSET),
+              1,
+            ]}
+            start={{x: 0, y: 0.5}}
+            end={{x: 1, y: 0.5}}
+            style={[
+              a.absolute,
+              {
+                top: 0,
+                bottom: 0,
+                left: 0,
+                width: insets.left + GRADIENT_FADE_INSET,
+              },
+            ]}
+          />
+          <LinearGradient
+            pointerEvents="none"
+            colors={[bgTransparent, bgOpaque, bgOpaque]}
+            locations={[
+              0,
+              GRADIENT_FADE_WIDTH / (insets.right + GRADIENT_FADE_INSET),
+              1,
+            ]}
+            start={{x: 0, y: 0.5}}
+            end={{x: 1, y: 0.5}}
+            style={[
+              a.absolute,
+              {
+                top: 0,
+                bottom: 0,
+                right: 0,
+                width: insets.right + GRADIENT_FADE_INSET,
+              },
+            ]}
+          />
+        </>
+      )}
       {IS_WEB && canScrollLeft && (
         <View
           style={[
