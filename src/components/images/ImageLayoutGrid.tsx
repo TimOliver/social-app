@@ -6,6 +6,8 @@ import {type AppBskyEmbedImages} from '@atproto/api'
 import {type Dimensions} from '#/view/com/lightbox/ImageViewing/@types'
 import {atoms as a, useBreakpoints} from '#/alf'
 import {PostEmbedViewContext} from '#/components/Post/Embed/types'
+import {IS_IPAD} from '#/env'
+import {IPAD_MEDIA_MAX_HEIGHT} from './AutoSizedImage'
 import {GalleryItem} from './ImageLayoutGridItem'
 
 interface ImageLayoutGridProps {
@@ -32,7 +34,13 @@ export function ImageLayoutGrid({style, ...props}: ImageLayoutGridProps) {
 
   return (
     <View style={style}>
-      <View style={[gap, a.rounded_md, a.overflow_hidden]}>
+      <View
+        style={[
+          gap,
+          a.rounded_md,
+          a.overflow_hidden,
+          IS_IPAD && {maxHeight: IPAD_MEDIA_MAX_HEIGHT},
+        ]}>
         <ImageLayoutGridInner {...props} gap={gap} />
       </View>
     </View>

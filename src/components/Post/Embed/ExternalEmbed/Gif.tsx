@@ -8,7 +8,9 @@ import {type EmbedPlayerParams} from '#/lib/strings/embed-player'
 import {useAutoplayDisabled} from '#/state/preferences'
 import {atoms as a, useTheme} from '#/alf'
 import {Fill} from '#/components/Fill'
+import {IPAD_MEDIA_MAX_HEIGHT} from '#/components/images/AutoSizedImage'
 import {MediaInsetBorder} from '#/components/MediaInsetBorder'
+import {IS_IPAD} from '#/env'
 import {GifView} from '../../../../../modules/expo-bluesky-gif-view'
 import {type GifViewStateChangeEvent} from '../../../../../modules/expo-bluesky-gif-view/src/GifView.types'
 import {GifPresentationControls} from '../VideoEmbed/GifPresentationControls'
@@ -63,6 +65,7 @@ export function GifEmbed({
         a.overflow_hidden,
         {backgroundColor: t.palette.black},
         {aspectRatio},
+        IS_IPAD && {maxHeight: IPAD_MEDIA_MAX_HEIGHT},
         style,
       ]}>
       <View
