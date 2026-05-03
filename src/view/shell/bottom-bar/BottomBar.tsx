@@ -15,6 +15,7 @@ import {useDedupe} from '#/lib/hooks/useDedupe'
 import {useHideBottomBarBorder} from '#/lib/hooks/useHideBottomBarBorder'
 import {useMinimalShellFooterTransform} from '#/lib/hooks/useMinimalShellTransform'
 import {useNavigationTabState} from '#/lib/hooks/useNavigationTabState'
+import {useReadableInsetStyle} from '#/lib/hooks/useReadableContentInsets'
 import {clamp} from '#/lib/numbers'
 import {getTabState, TabState} from '#/lib/routes/helpers'
 import {emitSoftReset} from '#/state/events'
@@ -68,6 +69,7 @@ export function BottomBar({navigation}: BottomTabBarProps) {
   const numUnreadMessages = useUnreadMessageCount()
   const aa = useAgeAssurance()
   const footerMinimalShellTransform = useMinimalShellFooterTransform()
+  const insetStyle = useReadableInsetStyle()
   const {data: profile} = useProfileQuery({did: currentAccount?.did})
   const {requestSwitchToAccount} = useLoggedOutViewControls()
   const closeAllActiveElements = useCloseAllActiveElements()
@@ -152,6 +154,7 @@ export function BottomBar({navigation}: BottomTabBarProps) {
             ? {borderColor: t.atoms.bg.backgroundColor}
             : t.atoms.border_contrast_low,
           {paddingBottom: clamp(safeAreaInsets.bottom, 15, 60)},
+          insetStyle,
           footerMinimalShellTransform,
         ]}
         onLayout={e => {
