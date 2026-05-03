@@ -8,6 +8,7 @@ import {PressableScale} from '#/lib/custom-animations/PressableScale'
 import {useMinimalShellFabTransform} from '#/lib/hooks/useMinimalShellTransform'
 import {useWebMediaQueries} from '#/lib/hooks/useWebMediaQueries'
 import {clamp} from '#/lib/numbers'
+import {isNativeTablet} from '#/platform/detection'
 import {useSession} from '#/state/session'
 import {atoms as a, useLayoutBreakpoints, useTheme, web} from '#/alf'
 import {useInteractionState} from '#/components/hooks/useInteractionState'
@@ -41,11 +42,14 @@ export function LoadLatestBtn({
 
   // Adjust height of the fab if we have a session only on mobile web. If we don't have a session, we want to adjust
   // it on both tablet and mobile since we are showing the bottom bar (see createNativeStackNavigatorWithAuth)
-  const showBottomBar = hasSession ? isMobile : isTabletOrMobile
+  const showBottomBar = hasSession
+    ? isMobile || isNativeTablet
+    : isTabletOrMobile
 
-  const bottomPosition = isTablet
-    ? {bottom: 50}
-    : {bottom: clamp(insets.bottom, 15, 60) + 15}
+  const bottomPosition =
+    isTablet && !isNativeTablet
+      ? {bottom: 50}
+      : {bottom: clamp(insets.bottom, 15, 60) + 15}
 
   return (
     <Animated.View
@@ -59,6 +63,7 @@ export function LoadLatestBtn({
             ? styles.loadLatestOutOfLine
             : styles.loadLatestInline),
         isTablet &&
+          !isNativeTablet &&
           (centerColumnOffset
             ? styles.loadLatestInlineOffset
             : styles.loadLatestInline),

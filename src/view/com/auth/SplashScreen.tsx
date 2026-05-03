@@ -7,6 +7,7 @@ import {useLingui} from '@lingui/react'
 import {Trans} from '@lingui/react/macro'
 
 import {useHaptics} from '#/lib/haptics'
+import {isNativeTablet} from '#/platform/detection'
 import {Logo} from '#/view/icons/Logo'
 import {Logotype} from '#/view/icons/Logotype'
 import {atoms as a, useTheme} from '#/alf'
@@ -79,7 +80,16 @@ export const SplashScreen = ({
 
         <View
           testID="signinOrCreateAccount"
-          style={[a.px_5xl, a.gap_md, a.pb_sm]}>
+          style={[
+            a.px_5xl,
+            a.gap_md,
+            a.pb_sm,
+            isNativeTablet && {
+              maxWidth: 450,
+              width: '100%',
+              alignSelf: 'center',
+            },
+          ]}>
           <View
             style={[
               t.atoms.shadow_md,
