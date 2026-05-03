@@ -7,6 +7,7 @@ import {
   type ListRenderItemInfo,
   type StyleProp,
   StyleSheet,
+  useWindowDimensions,
   View,
   type ViewStyle,
 } from 'react-native'
@@ -21,6 +22,7 @@ import {useQueryClient} from '@tanstack/react-query'
 import {DISCOVER_FEED_URI, KNOWN_SHUTDOWN_FEEDS} from '#/lib/constants'
 import {useInitialNumToRender} from '#/lib/hooks/useInitialNumToRender'
 import {useNonReactiveCallback} from '#/lib/hooks/useNonReactiveCallback'
+import {useReadableContentInsets} from '#/lib/hooks/useReadableContentInsets'
 import {isNetworkError} from '#/lib/strings/errors'
 import {logger} from '#/logger'
 import {usePostAuthorShadowFilter} from '#/state/cache/profile-shadow'
@@ -46,7 +48,7 @@ import {List, type ListRef} from '#/view/com/util/List'
 import {PostFeedLoadingPlaceholder} from '#/view/com/util/LoadingPlaceholder'
 import {LoadMoreRetryBtn} from '#/view/com/util/LoadMoreRetryBtn'
 import {type VideoFeedSourceContext} from '#/screens/VideoFeed/types'
-import {useBreakpoints, useLayoutBreakpoints} from '#/alf'
+import {atoms as a, useBreakpoints, useLayoutBreakpoints, useTheme} from '#/alf'
 import {
   AgeAssuranceDismissibleFeedBanner,
   useInternalState as useAgeAssuranceBannerState,
@@ -59,7 +61,7 @@ import {
 import {TrendingInterstitial} from '#/components/interstitials/Trending'
 import {TrendingVideos as TrendingVideosInterstitial} from '#/components/interstitials/TrendingVideos'
 import {useAnalytics} from '#/analytics'
-import {IS_IOS, IS_NATIVE, IS_WEB} from '#/env'
+import {IS_IOS, IS_IPAD, IS_NATIVE, IS_WEB} from '#/env'
 import {DiscoverFeedLiveEventFeedsAndTrendingBanner} from '#/features/liveEvents/components/DiscoverFeedLiveEventFeedsAndTrendingBanner'
 import {
   isStatusStillActive,
@@ -233,6 +235,9 @@ let PostFeed = ({
   const queryClient = useQueryClient()
   const {currentAccount, hasSession} = useSession()
   const initialNumToRender = useInitialNumToRender()
+  const t = useTheme()
+  const readableInsets = useReadableContentInsets()
+  const {width: screenWidth} = useWindowDimensions()
   const feedFeedback = useFeedFeedbackContext()
   const [isPTRing, setIsPTRing] = useState(false)
   // eslint-disable-next-line react-hooks/purity
@@ -789,7 +794,20 @@ let PostFeed = ({
       } else if (row.type === 'liveEventFeedsAndTrendingBanner') {
         return <DiscoverFeedLiveEventFeedsAndTrendingBanner />
       } else if (row.type === 'composerPrompt') {
-        return <ComposerPrompt />
+        return (
+          <>
+            <ComposerPrompt />
+            <View
+              style={[
+                t.atoms.border_contrast_low,
+                a.border_t,
+                IS_IPAD
+                  ? {width: screenWidth, marginLeft: -readableInsets.left}
+                  : a.w_full,
+              ]}
+            />
+          </>
+        )
       } else if (row.type === 'interstitialTrendingVideos') {
         return <TrendingVideosInterstitial />
       } else if (row.type === 'fallbackMarker') {
@@ -820,7 +838,11 @@ let PostFeed = ({
             }
             isParentBlocked={item.isParentBlocked}
             isParentNotFound={item.isParentNotFound}
-            hideTopBorder={rowIndex === 0 && indexInSlice === 0}
+            hideTopBorder={
+              (rowIndex === 0 && indexInSlice === 0) ||
+              (indexInSlice === 0 &&
+                feedItems[rowIndex - 1]?.type === 'composerPrompt')
+            }
             rootPost={slice.items[0].post}
             onShowLess={onPressShowLess}
           />
@@ -876,6 +898,10 @@ let PostFeed = ({
       feedTab,
       feedCacheKey,
       onPressShowLess,
+      feedItems,
+      t.atoms.border_contrast_low,
+      readableInsets.left,
+      screenWidth,
     ],
   )
 
