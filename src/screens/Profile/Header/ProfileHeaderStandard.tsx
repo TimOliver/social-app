@@ -12,6 +12,7 @@ import {useLingui} from '@lingui/react'
 import {Trans} from '@lingui/react/macro'
 
 import {useHaptics} from '#/lib/haptics'
+import {useReadableContentInsets} from '#/lib/hooks/useReadableContentInsets'
 import {sanitizeDisplayName} from '#/lib/strings/display-names'
 import {sanitizeHandle} from '#/lib/strings/handles'
 import {logger} from '#/logger'
@@ -38,7 +39,7 @@ import * as Prompt from '#/components/Prompt'
 import {RichText} from '#/components/RichText'
 import * as Toast from '#/components/Toast'
 import {Text} from '#/components/Typography'
-import {IS_IOS} from '#/env'
+import {IS_IOS, IS_IPAD} from '#/env'
 import {useActorStatus} from '#/features/liveNow'
 import {GermButton} from '../components/GermButton'
 import {EditProfileDialog} from './EditProfileDialog'
@@ -103,6 +104,7 @@ let ProfileHeaderStandard = ({
   const isMe = currentAccount?.did === profile.did
 
   const {isActive: live} = useActorStatus(profile)
+  const readableInsets = useReadableContentInsets()
 
   return (
     <>
@@ -112,7 +114,16 @@ let ProfileHeaderStandard = ({
         hideBackButton={hideBackButton}
         isPlaceholderProfile={isPlaceholderProfile}>
         <View
-          style={[a.px_lg, a.pt_md, a.pb_sm, a.overflow_hidden]}
+          style={[
+            a.px_lg,
+            a.pt_md,
+            a.pb_sm,
+            a.overflow_hidden,
+            IS_IPAD && {
+              paddingLeft: readableInsets.left,
+              paddingRight: readableInsets.right,
+            },
+          ]}
           pointerEvents={IS_IOS ? 'auto' : 'box-none'}>
           <View
             style={[

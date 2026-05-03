@@ -17,10 +17,12 @@ import Animated, {
   useSharedValue,
 } from 'react-native-reanimated'
 
+import {useReadableContentInsets} from '#/lib/hooks/useReadableContentInsets'
 import {PressableWithHover} from '#/view/com/util/PressableWithHover'
 import {BlockDrawerGesture} from '#/view/shell/BlockDrawerGesture'
 import {atoms as a, useTheme} from '#/alf'
 import {Text} from '#/components/Typography'
+import {IS_IPAD} from '#/env'
 
 export interface TabBarProps {
   testID?: string
@@ -51,6 +53,7 @@ export function TabBar({
 }: TabBarProps) {
   const t = useTheme()
   const scrollElRef = useAnimatedRef<ScrollView>()
+  const readableInsets = useReadableContentInsets()
   const syncScrollState = useSharedValue<'synced' | 'unsynced' | 'needs-sync'>(
     'synced',
   )
@@ -323,7 +326,13 @@ export function TabBar({
           horizontal={true}
           showsHorizontalScrollIndicator={false}
           ref={scrollElRef}
-          contentContainerStyle={styles.contentContainer}
+          contentContainerStyle={[
+            styles.contentContainer,
+            IS_IPAD && {
+              paddingLeft: CONTENT_PADDING + readableInsets.left,
+              paddingRight: CONTENT_PADDING + readableInsets.right,
+            },
+          ]}
           onLayout={e => {
             containerSize.set(e.nativeEvent.layout.width)
           }}

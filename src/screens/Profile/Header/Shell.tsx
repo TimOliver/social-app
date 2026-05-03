@@ -12,6 +12,7 @@ import {useNavigation} from '@react-navigation/native'
 
 import {BACK_HITSLOP} from '#/lib/constants'
 import {useHaptics} from '#/lib/haptics'
+import {useReadableContentInsets} from '#/lib/hooks/useReadableContentInsets'
 import {type NavigationProp} from '#/lib/routes/types'
 import {type Shadow} from '#/state/cache/types'
 import {useLightboxControls} from '#/state/lightbox'
@@ -26,7 +27,7 @@ import {ArrowLeft_Stroke2_Corner0_Rounded as ArrowLeftIcon} from '#/components/i
 import {LabelsOnMe} from '#/components/moderation/LabelsOnMe'
 import {ProfileHeaderAlerts} from '#/components/moderation/ProfileHeaderAlerts'
 import {useAnalytics} from '#/analytics'
-import {IS_IOS} from '#/env'
+import {IS_IOS, IS_IPAD} from '#/env'
 import {useActorStatus} from '#/features/liveNow'
 import {EditLiveDialog} from '#/features/liveNow/components/EditLiveDialog'
 import {LiveIndicator} from '#/features/liveNow/components/LiveIndicator'
@@ -61,6 +62,7 @@ let ProfileHeaderShell = ({
 
   const aviRef = useAnimatedRef()
   const bannerRef = useAnimatedRef<Animated.View>()
+  const readableInsets = useReadableContentInsets()
 
   const onPressBack = useCallback(() => {
     if (navigation.canGoBack()) {
@@ -235,6 +237,10 @@ let ProfileHeaderShell = ({
               a.pt_xs,
               a.pb_sm,
               IS_IOS ? a.pointer_events_auto : {pointerEvents: 'box-none'},
+              IS_IPAD && {
+                paddingLeft: readableInsets.left,
+                paddingRight: readableInsets.right,
+              },
             ]}
           />
         ) : (
@@ -245,11 +251,19 @@ let ProfileHeaderShell = ({
               a.pt_xs,
               a.pb_sm,
               IS_IOS ? a.pointer_events_auto : {pointerEvents: 'box-none'},
+              IS_IPAD && {
+                paddingLeft: readableInsets.left,
+                paddingRight: readableInsets.right,
+              },
             ]}
           />
         ))}
 
-      <GrowableAvatar style={[a.absolute, {top: 104, left: 10}]}>
+      <GrowableAvatar
+        style={[
+          a.absolute,
+          {top: 104, left: IS_IPAD ? readableInsets.left + 10 : 10},
+        ]}>
         <Pressable
           testID="profileHeaderAviButton"
           onPress={onPressAvi}
