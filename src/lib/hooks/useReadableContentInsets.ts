@@ -11,7 +11,7 @@ const ZERO_INSETS: ReadableContentInsets = {left: 0, right: 0}
 // at the default Dynamic Type setting (~17pt body). The line length stays
 // roughly constant in characters, so the readable column scales with the
 // effective font size — i.e. larger text → wider column.
-const BASE_READABLE_WIDTH = 672
+const BASE_READABLE_WIDTH = 750
 
 /**
  * Cap on iPad media (images, videos, link-card thumbnails) so they don't
