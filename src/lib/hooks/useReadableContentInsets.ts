@@ -1,11 +1,8 @@
-import {useEffect, useState} from 'react'
-import {Dimensions} from 'react-native'
+import {useMemo} from 'react'
+import {useWindowDimensions} from 'react-native'
 
 import {IS_IPAD} from '#/env'
-import {
-  PlatformInfo,
-  type ReadableContentInsets,
-} from '../../../modules/expo-bluesky-swiss-army'
+import {type ReadableContentInsets} from '../../../modules/expo-bluesky-swiss-army'
 
 const ZERO_INSETS: ReadableContentInsets = {
   left: 0,
@@ -14,29 +11,25 @@ const ZERO_INSETS: ReadableContentInsets = {
   bottom: 0,
 }
 
+// Apple's `UIView.readableContentGuide` caps content to roughly this width
+// at the default Dynamic Type setting. Computing the insets in JS avoids a
+// race with UIKit's layout on rotation that left the bridged native call
+// returning stale values mid-rotation.
+const READABLE_MAX_WIDTH = 672
+
 /**
- * Returns the insets `UIView.readableContentGuide` would apply to a
- * full-screen view at the current screen size and Dynamic Type setting.
+ * Returns the horizontal/vertical insets that approximate
+ * `UIView.readableContentGuide` at the current window size.
  *
  * On iPad these cap content to a comfortable reading width — useful for
  * left/right padding on vertically-scrolling feeds. On iPhone, web, and
- * Android, returns zero insets (the surrounding layout already handles
- * comfortable widths there).
- *
- * Re-evaluates on dimension change (e.g. rotation).
+ * Android, returns zero insets.
  */
 export function useReadableContentInsets(): ReadableContentInsets {
-  const [insets, setInsets] = useState<ReadableContentInsets>(() =>
-    IS_IPAD ? PlatformInfo.getReadableContentInsets() : ZERO_INSETS,
-  )
-
-  useEffect(() => {
-    if (!IS_IPAD) return
-    const sub = Dimensions.addEventListener('change', () => {
-      setInsets(PlatformInfo.getReadableContentInsets())
-    })
-    return () => sub.remove()
-  }, [])
-
-  return insets
+  const {width} = useWindowDimensions()
+  return useMemo(() => {
+    if (!IS_IPAD || width <= READABLE_MAX_WIDTH) return ZERO_INSETS
+    const horizontal = (width - READABLE_MAX_WIDTH) / 2
+    return {left: horizontal, right: horizontal, top: 0, bottom: 0}
+  }, [width])
 }

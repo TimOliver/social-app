@@ -105,6 +105,10 @@ let ProfileHeaderStandard = ({
 
   const {isActive: live} = useActorStatus(profile)
   const readableInsets = useReadableContentInsets()
+  // RN's Text caches its measured layout and won't reflow when the parent
+  // width changes mid-session (rotation). Re-key the bio on the inset to
+  // force a fresh measurement.
+  const bioKey = `bio-${readableInsets.left}`
 
   return (
     <>
@@ -118,7 +122,6 @@ let ProfileHeaderStandard = ({
             a.px_lg,
             a.pt_md,
             a.pb_sm,
-            a.overflow_hidden,
             IS_IPAD && {
               paddingLeft: readableInsets.left,
               paddingRight: readableInsets.right,
@@ -172,7 +175,7 @@ let ProfileHeaderStandard = ({
             <View style={a.gap_md}>
               <ProfileHeaderMetrics profile={profile} />
               {descriptionRT && !moderation.ui('profileView').blur ? (
-                <View pointerEvents="auto">
+                <View key={bioKey} pointerEvents="auto">
                   <RichText
                     testID="profileHeaderDescription"
                     style={[a.text_md]}
