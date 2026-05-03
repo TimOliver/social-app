@@ -13,6 +13,7 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context'
 import {requireNativeModule, requireNativeViewManager} from 'expo-modules-core'
 
 import {
+  type BottomSheetContentSizeChangeEvent,
   type BottomSheetState,
   type BottomSheetViewProps,
 } from './BottomSheet.types'
@@ -23,6 +24,7 @@ import {
 
 const NativeView: React.ComponentType<
   BottomSheetViewProps & {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ref: React.RefObject<any>
     style: StyleProp<ViewStyle>
   }
@@ -44,8 +46,10 @@ export class BottomSheetNativeComponent extends Component<
   {
     open: boolean
     viewHeight?: number
+    sheetWidth?: number
   }
 > {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ref = createRef<any>()
 
   static contextType = PortalContext
@@ -71,7 +75,18 @@ export class BottomSheetNativeComponent extends Component<
     const {state} = event.nativeEvent
     const isOpen = state !== 'closed'
     this.setState({open: isOpen})
+    if (!isOpen) {
+      this.setState({sheetWidth: undefined})
+    }
     this.props.onStateChange?.(event)
+  }
+
+  private onContentSizeChange = (event: BottomSheetContentSizeChangeEvent) => {
+    const {width} = event.nativeEvent
+    if (width !== this.state.sheetWidth) {
+      this.setState({sheetWidth: width})
+    }
+    this.props.onContentSizeChange?.(event)
   }
 
   static dismissAll = async () => {
@@ -111,6 +126,8 @@ export class BottomSheetNativeComponent extends Component<
           {...this.props}
           nativeViewRef={this.ref}
           onStateChange={this.onStateChange}
+          onContentSizeChange={this.onContentSizeChange}
+          sheetWidth={this.state.sheetWidth}
           extraStyles={extraStyles}
           onLayout={
             IS_IOS15
@@ -132,6 +149,8 @@ function BottomSheetNativeComponentInner({
   maxHeight,
   onLayout,
   onStateChange,
+  onContentSizeChange,
+  sheetWidth,
   nativeViewRef,
   extraStyles,
   ...rest
@@ -140,6 +159,8 @@ function BottomSheetNativeComponentInner({
   onStateChange: (
     event: NativeSyntheticEvent<{state: BottomSheetState}>,
   ) => void
+  onContentSizeChange: (event: BottomSheetContentSizeChangeEvent) => void
+  sheetWidth: number | undefined
   nativeViewRef: React.RefObject<View>
   onLayout?: (event: LayoutChangeEvent) => void
 }) {
@@ -159,6 +180,7 @@ function BottomSheetNativeComponentInner({
       {...rest}
       maxHeight={maxHeight}
       onStateChange={onStateChange}
+      onContentSizeChange={onContentSizeChange}
       ref={nativeViewRef}
       style={{
         position: 'absolute',
@@ -171,6 +193,15 @@ function BottomSheetNativeComponentInner({
           {
             flex: 1,
             backgroundColor,
+            // The native sheet (e.g. .formSheet on iPad) is often narrower
+            // than the window. The React subview is added to the sheet's
+            // view at its origin, so anchoring at flex-start puts our
+            // content's left edge at the sheet's left edge — its actual
+            // visible-bounds origin in screen coords.
+            ...(sheetWidth != null && {
+              width: sheetWidth,
+              alignSelf: 'flex-start' as const,
+            }),
           },
           maxHeight != null && {maxHeight},
           Platform.OS === 'android' && {

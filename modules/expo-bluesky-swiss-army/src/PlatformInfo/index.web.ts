@@ -1,5 +1,5 @@
 import {NotImplementedError} from '../NotImplemented'
-import {type AudioCategory, type ReadableContentInsets} from './types'
+import {type AudioCategory} from './types'
 
 export function getIsReducedMotionEnabled(): boolean {
   if (typeof window === 'undefined') {
@@ -14,8 +14,4 @@ export function setAudioActive(active: boolean): void {
 
 export function setAudioCategory(audioCategory: AudioCategory): void {
   throw new NotImplementedError({audioCategory})
-}
-
-export function getReadableContentInsets(): ReadableContentInsets {
-  return {left: 0, right: 0, top: 0, bottom: 0}
 }

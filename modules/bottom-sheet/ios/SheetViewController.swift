@@ -9,6 +9,11 @@ import Foundation
 import UIKit
 
 class SheetViewController: UIViewController {
+  // Called whenever the view's bounds settle after a layout pass. Used to
+  // report the actual presented sheet size up to React via SheetView.
+  var onSheetLayout: ((CGSize) -> Void)?
+  private var lastReportedSize: CGSize = .zero
+
   init() {
     super.init(nibName: nil, bundle: nil)
 
@@ -18,6 +23,14 @@ class SheetViewController: UIViewController {
     if let sheet = self.sheetPresentationController {
       sheet.prefersGrabberVisible = false
     }
+  }
+
+  override func viewDidLayoutSubviews() {
+    super.viewDidLayoutSubviews()
+    let size = self.view.bounds.size
+    guard size.width > 0, size != self.lastReportedSize else { return }
+    self.lastReportedSize = size
+    self.onSheetLayout?(size)
   }
 
   func setDetents(contentHeight: CGFloat, preventExpansion: Bool, fullHeight: Bool = false) {

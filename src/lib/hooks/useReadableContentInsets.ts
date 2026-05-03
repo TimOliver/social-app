@@ -2,7 +2,13 @@ import {useMemo} from 'react'
 import {useWindowDimensions} from 'react-native'
 
 import {IS_IPAD} from '#/env'
-import {type ReadableContentInsets} from '../../../modules/expo-bluesky-swiss-army'
+
+export type ReadableContentInsets = {
+  left: number
+  right: number
+  top: number
+  bottom: number
+}
 
 const ZERO_INSETS: ReadableContentInsets = {
   left: 0,

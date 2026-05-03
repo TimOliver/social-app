@@ -15,6 +15,10 @@ export type BottomSheetSnapPointChangeEvent = NativeSyntheticEvent<{
 export type BottomSheetStateChangeEvent = NativeSyntheticEvent<{
   state: BottomSheetState
 }>
+export type BottomSheetContentSizeChangeEvent = NativeSyntheticEvent<{
+  width: number
+  height: number
+}>
 
 export interface BottomSheetViewProps {
   children: React.ReactNode
@@ -33,4 +37,5 @@ export interface BottomSheetViewProps {
   onAttemptDismiss?: (event: BottomSheetAttemptDismissEvent) => void
   onSnapPointChange?: (event: BottomSheetSnapPointChangeEvent) => void
   onStateChange?: (event: BottomSheetStateChangeEvent) => void
+  onContentSizeChange?: (event: BottomSheetContentSizeChangeEvent) => void
 }

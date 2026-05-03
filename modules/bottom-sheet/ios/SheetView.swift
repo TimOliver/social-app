@@ -15,6 +15,7 @@ class SheetView: ExpoView, UISheetPresentationControllerDelegate {
   private let onAttemptDismiss = EventDispatcher()
   private let onSnapPointChange = EventDispatcher()
   private let onStateChange = EventDispatcher()
+  private let onContentSizeChange = EventDispatcher()
 
   // Open event firing
   private var isOpen: Bool = false {
@@ -111,6 +112,7 @@ class SheetView: ExpoView, UISheetPresentationControllerDelegate {
   private func destroy() {
     self.contentHeightObservation?.invalidate()
     self.contentHeightObservation = nil
+    self.sheetVc?.onSheetLayout = nil
     self.isClosing = false
     self.isOpen = false
     self.sheetVc = nil
@@ -154,6 +156,15 @@ class SheetView: ExpoView, UISheetPresentationControllerDelegate {
     self.isOpening = true
     if !self.fullHeight {
       self.startObservingContentHeight()
+    }
+    // Set up the layout callback BEFORE present() so the first viewDidLayoutSubviews
+    // — which fires during the presentation's layout pass — flows through to React
+    // before the user sees the animated reveal.
+    sheetVc.onSheetLayout = { [weak self] size in
+      self?.onContentSizeChange([
+        "width": size.width,
+        "height": size.height,
+      ])
     }
 
     rvc.present(sheetVc, animated: true) { [weak self] in
