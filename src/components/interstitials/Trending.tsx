@@ -13,6 +13,7 @@ import {LoadingPlaceholder} from '#/view/com/util/LoadingPlaceholder'
 import {BlockDrawerGesture} from '#/view/shell/BlockDrawerGesture'
 import {atoms as a, useGutters, useTheme} from '#/alf'
 import {Button, ButtonIcon} from '#/components/Button'
+import {EdgeToEdgeBleed} from '#/components/EdgeToEdgeBleed'
 import {TimesLarge_Stroke2_Corner0_Rounded as X} from '#/components/icons/Times'
 import {Trending2_Stroke2_Corner2_Rounded as Graph} from '#/components/icons/Trending'
 import * as Prompt from '#/components/Prompt'
@@ -42,7 +43,8 @@ export function Inner() {
   }, [ax, setTrendingDisabled])
 
   return error || noTopics ? null : (
-    <View style={[t.atoms.border_contrast_low, a.border_t, a.border_b]}>
+    <>
+      <EdgeToEdgeBleed />
       <BlockDrawerGesture>
         <ScrollView
           horizontal
@@ -125,6 +127,7 @@ export function Inner() {
           </View>
         </ScrollView>
       </BlockDrawerGesture>
+      <EdgeToEdgeBleed />
 
       <Prompt.Basic
         control={trendingPrompt}
@@ -133,6 +136,6 @@ export function Inner() {
         confirmButtonCta={_(msg`Hide`)}
         onConfirm={onConfirmHide}
       />
-    </View>
+    </>
   )
 }
