@@ -1,5 +1,5 @@
 import {useCallback, useMemo, useRef, useState} from 'react'
-import {View, type ViewabilityConfig} from 'react-native'
+import {useWindowDimensions, View, type ViewabilityConfig} from 'react-native'
 import {
   type AppBskyActorDefs,
   type AppBskyFeedDefs,
@@ -11,6 +11,7 @@ import {Trans} from '@lingui/react/macro'
 import {useQueryClient} from '@tanstack/react-query'
 import * as bcp47Match from 'bcp-47-match'
 
+import {useReadableContentInsets} from '#/lib/hooks/useReadableContentInsets'
 import {popularInterests, useInterestsDisplayNames} from '#/lib/interests'
 import {cleanError} from '#/lib/strings/errors'
 import {sanitizeHandle} from '#/lib/strings/handles'
@@ -70,6 +71,7 @@ import * as ProfileCard from '#/components/ProfileCard'
 import {SubtleHover} from '#/components/SubtleHover'
 import {Text} from '#/components/Typography'
 import {type Metrics, useAnalytics} from '#/analytics'
+import {IS_IPAD} from '#/env'
 import {ExploreScreenLiveEventFeedsBanner} from '#/features/liveEvents/components/ExploreScreenLiveEventFeedsBanner'
 import * as ModuleHeader from './components/ModuleHeader'
 import {
@@ -222,6 +224,8 @@ export function Explore({
   const ax = useAnalytics()
   const {_} = useLingui()
   const t = useTheme()
+  const readableInsets = useReadableContentInsets()
+  const {width: screenWidth} = useWindowDimensions()
   const {data: preferences, error: preferencesError} = usePreferencesQuery()
   const moderationOpts = useModerationOpts()
   const [selectedInterest, setSelectedInterest] = useState<string | null>(null)
@@ -755,8 +759,20 @@ export function Explore({
       }
       switch (item.type) {
         case 'topBorder':
+          // Counter the List's readable-content padding so this separator
+          // visually anchors the search bar to the navigation header. We
+          // need explicit width here because `w_full` would still resolve
+          // to the padded inner width.
           return (
-            <View style={[a.w_full, t.atoms.border_contrast_low, a.border_t]} />
+            <View
+              style={[
+                t.atoms.border_contrast_low,
+                a.border_t,
+                IS_IPAD
+                  ? {width: screenWidth, marginLeft: -readableInsets.left}
+                  : a.w_full,
+              ]}
+            />
           )
         case 'header': {
           return (
@@ -1045,6 +1061,8 @@ export function Explore({
       t.atoms.text_contrast_medium,
       t.atoms.bg,
       t.palette.negative_400,
+      readableInsets.left,
+      screenWidth,
       focusSearchInput,
       selectedInterest,
       moderationOpts,
