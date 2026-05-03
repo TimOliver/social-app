@@ -39,7 +39,10 @@ export function ImageLayoutGrid({style, ...props}: ImageLayoutGridProps) {
           gap,
           a.rounded_md,
           a.overflow_hidden,
-          IS_IPAD && {maxHeight: IPAD_MEDIA_MAX_HEIGHT},
+          // On iPad, cells are explicitly sized rather than stretched,
+          // so let the wrapper shrink-wrap them — that way its rounded
+          // corners actually clip the right-edge cells.
+          IS_IPAD && a.self_start,
         ]}>
         <ImageLayoutGridInner {...props} gap={gap} />
       </View>
@@ -75,7 +78,11 @@ function ImageLayoutGridInner(props: ImageLayoutGridInnerProps) {
       const containerRefs = [containerRef1, containerRef2]
       return (
         <View style={[a.flex_1, a.flex_row, gap]}>
-          <View style={[a.flex_1, a.aspect_square]}>
+          <View
+            style={[
+              a.aspect_square,
+              IS_IPAD ? {height: IPAD_MEDIA_MAX_HEIGHT} : a.flex_1,
+            ]}>
             <GalleryItem
               {...props}
               index={0}
@@ -84,7 +91,11 @@ function ImageLayoutGridInner(props: ImageLayoutGridInnerProps) {
               thumbDimsRef={thumbDimsRef}
             />
           </View>
-          <View style={[a.flex_1, a.aspect_square]}>
+          <View
+            style={[
+              a.aspect_square,
+              IS_IPAD ? {height: IPAD_MEDIA_MAX_HEIGHT} : a.flex_1,
+            ]}>
             <GalleryItem
               {...props}
               index={1}
@@ -101,7 +112,11 @@ function ImageLayoutGridInner(props: ImageLayoutGridInnerProps) {
       const containerRefs = [containerRef1, containerRef2, containerRef3]
       return (
         <View style={[a.flex_1, a.flex_row, gap]}>
-          <View style={[a.flex_1, a.aspect_square]}>
+          <View
+            style={[
+              a.aspect_square,
+              IS_IPAD ? {height: IPAD_MEDIA_MAX_HEIGHT} : a.flex_1,
+            ]}>
             <GalleryItem
               {...props}
               index={0}
@@ -110,7 +125,12 @@ function ImageLayoutGridInner(props: ImageLayoutGridInnerProps) {
               thumbDimsRef={thumbDimsRef}
             />
           </View>
-          <View style={[a.flex_1, a.aspect_square, gap]}>
+          <View
+            style={[
+              a.aspect_square,
+              gap,
+              IS_IPAD ? {height: IPAD_MEDIA_MAX_HEIGHT} : a.flex_1,
+            ]}>
             <View style={[a.flex_1]}>
               <GalleryItem
                 {...props}
@@ -152,7 +172,11 @@ function ImageLayoutGridInner(props: ImageLayoutGridInnerProps) {
       return (
         <>
           <View style={[a.flex_row, gap]}>
-            <View style={[a.flex_1, {aspectRatio: 1.5}]}>
+            <View
+              style={[
+                {aspectRatio: 1.5},
+                IS_IPAD ? {height: IPAD_MEDIA_MAX_HEIGHT / 2} : a.flex_1,
+              ]}>
               <GalleryItem
                 {...props}
                 index={0}
@@ -165,7 +189,11 @@ function ImageLayoutGridInner(props: ImageLayoutGridInnerProps) {
                 thumbDimsRef={thumbDimsRef}
               />
             </View>
-            <View style={[a.flex_1, {aspectRatio: 1.5}]}>
+            <View
+              style={[
+                {aspectRatio: 1.5},
+                IS_IPAD ? {height: IPAD_MEDIA_MAX_HEIGHT / 2} : a.flex_1,
+              ]}>
               <GalleryItem
                 {...props}
                 index={1}
@@ -180,7 +208,11 @@ function ImageLayoutGridInner(props: ImageLayoutGridInnerProps) {
             </View>
           </View>
           <View style={[a.flex_row, gap]}>
-            <View style={[a.flex_1, {aspectRatio: 1.5}]}>
+            <View
+              style={[
+                {aspectRatio: 1.5},
+                IS_IPAD ? {height: IPAD_MEDIA_MAX_HEIGHT / 2} : a.flex_1,
+              ]}>
               <GalleryItem
                 {...props}
                 index={2}
@@ -193,7 +225,11 @@ function ImageLayoutGridInner(props: ImageLayoutGridInnerProps) {
                 thumbDimsRef={thumbDimsRef}
               />
             </View>
-            <View style={[a.flex_1, {aspectRatio: 1.5}]}>
+            <View
+              style={[
+                {aspectRatio: 1.5},
+                IS_IPAD ? {height: IPAD_MEDIA_MAX_HEIGHT / 2} : a.flex_1,
+              ]}>
               <GalleryItem
                 {...props}
                 index={3}
