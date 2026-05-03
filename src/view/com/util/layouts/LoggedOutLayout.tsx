@@ -1,12 +1,10 @@
 import {ScrollView, StyleSheet, View} from 'react-native'
 
-import {useColorSchemeStyle} from '#/lib/hooks/useColorSchemeStyle'
 import {useIsKeyboardVisible} from '#/lib/hooks/useIsKeyboardVisible'
-import {usePalette} from '#/lib/hooks/usePalette'
 import {useWebMediaQueries} from '#/lib/hooks/useWebMediaQueries'
-import {atoms as a} from '#/alf'
-import {IS_IPAD, IS_WEB} from '#/env'
-import {Text} from '../text/Text'
+import {atoms as a, useTheme, web} from '#/alf'
+import {Text} from '#/components/Typography'
+import {IS_IPAD} from '#/env'
 
 export const LoggedOutLayout = ({
   leadin,
@@ -20,15 +18,8 @@ export const LoggedOutLayout = ({
   description: string
   scrollable?: boolean
 }>) => {
+  const t = useTheme()
   const {isMobile, isTabletOrMobile} = useWebMediaQueries()
-  const pal = usePalette('default')
-  const sideBg = useColorSchemeStyle(pal.viewLight, pal.view)
-  const contentBg = useColorSchemeStyle(pal.view, {
-    backgroundColor: pal.colors.background,
-    borderColor: pal.colors.border,
-    borderLeftWidth: 1,
-  })
-
   const [isKeyboardVisible] = useIsKeyboardVisible()
 
   if (isMobile || IS_IPAD) {
@@ -50,10 +41,10 @@ export const LoggedOutLayout = ({
   }
   return (
     <View style={styles.container}>
-      <View style={[styles.side, sideBg]}>
+      <View style={[styles.side, t.atoms.bg_contrast_25]}>
         <Text
           style={[
-            pal.textLight,
+            t.atoms.text_contrast_medium,
             styles.leadinText,
             isTabletOrMobile && styles.leadinTextSmall,
           ]}>
@@ -61,30 +52,52 @@ export const LoggedOutLayout = ({
         </Text>
         <Text
           style={[
-            pal.link,
+            {color: t.palette.primary_500},
             styles.titleText,
             isTabletOrMobile && styles.titleTextSmall,
           ]}>
           {title}
         </Text>
-        <Text type="2xl-medium" style={[pal.textLight, styles.descriptionText]}>
+        <Text
+          style={[
+            a.text_2xl,
+            a.font_medium,
+            t.atoms.text_contrast_medium,
+            styles.descriptionText,
+          ]}>
           {description}
         </Text>
       </View>
       {scrollable ? (
-        <View style={[styles.scrollableContent, contentBg]}>
+        <View
+          style={[
+            styles.scrollableContent,
+            t.atoms.bg,
+            t.name === 'dark' && [
+              t.atoms.border_contrast_low,
+              {borderLeftWidth: 1},
+            ],
+          ]}>
           <ScrollView
             style={a.flex_1}
             contentContainerStyle={styles.scrollViewContentContainer}
             keyboardShouldPersistTaps="handled"
             keyboardDismissMode="on-drag">
-            <View style={[styles.contentWrapper, IS_WEB && a.my_auto]}>
+            <View style={[styles.contentWrapper, web(a.my_auto)]}>
               {children}
             </View>
           </ScrollView>
         </View>
       ) : (
-        <View style={[styles.content, contentBg]}>
+        <View
+          style={[
+            styles.content,
+            t.atoms.bg,
+            t.name === 'dark' && [
+              t.atoms.border_contrast_low,
+              {borderLeftWidth: 1},
+            ],
+          ]}>
           <View style={styles.contentWrapper}>{children}</View>
         </View>
       )}
