@@ -7,6 +7,7 @@ import {Trans} from '@lingui/react/macro'
 import {PressableScale} from '#/lib/custom-animations/PressableScale'
 import {useHaptics} from '#/lib/haptics'
 import {useHideBottomBarBorderForScreen} from '#/lib/hooks/useHideBottomBarBorder'
+import {useReadableInsetStyle} from '#/lib/hooks/useReadableContentInsets'
 import {useProfileQuery} from '#/state/queries/profile'
 import {useSession} from '#/state/session'
 import {UserAvatar} from '#/view/com/util/UserAvatar'
@@ -28,6 +29,7 @@ export function ThreadComposePrompt({
   const {gtMobile} = useBreakpoints()
   const t = useTheme()
   const playHaptic = useHaptics()
+  const insetStyle = useReadableInsetStyle()
   const {
     state: hovered,
     onIn: onHoverIn,
@@ -43,6 +45,7 @@ export function ThreadComposePrompt({
         gtMobile
           ? [a.py_xs, a.border_t, t.atoms.border_contrast_low, t.atoms.bg]
           : [a.pb_2xs],
+        insetStyle,
         style,
       ]}>
       {!gtMobile && (

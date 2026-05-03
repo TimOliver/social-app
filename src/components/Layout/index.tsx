@@ -150,11 +150,13 @@ export const KeyboardAwareContent = memo(function LayoutKeyboardAwareContent({
   contentContainerStyle,
   ...props
 }: KeyboardAwareContentProps) {
+  const insetStyle = useReadableInsetStyle()
   return (
     <KeyboardAwareScrollView
       style={[scrollViewStyles.common, style]}
       contentContainerStyle={[
         scrollViewStyles.contentContainer,
+        insetStyle,
         contentContainerStyle,
       ]}
       keyboardShouldPersistTaps="handled"
