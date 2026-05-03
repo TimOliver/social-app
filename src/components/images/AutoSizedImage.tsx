@@ -19,9 +19,9 @@ import {MediaInsetBorder} from '#/components/MediaInsetBorder'
 import {Text} from '#/components/Typography'
 import {IS_IPAD, IS_NATIVE} from '#/env'
 
-// Caps post media (images, videos) to a comfortable size on iPad rather
-// than letting them stretch edge-to-edge.
-const IPAD_MEDIA_MAX_HEIGHT = 320
+// Caps post media (images, videos, link-card thumbnails) to a comfortable
+// size on iPad rather than letting them stretch edge-to-edge.
+export const IPAD_MEDIA_MAX_HEIGHT = 320
 
 export function ConstrainedImage({
   aspectRatio,

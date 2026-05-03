@@ -14,9 +14,10 @@ import {useExternalEmbedsPrefs} from '#/state/preferences'
 import {atoms as a, useTheme} from '#/alf'
 import {Divider} from '#/components/Divider'
 import {Earth_Stroke2_Corner0_Rounded as Globe} from '#/components/icons/Globe'
+import {IPAD_MEDIA_MAX_HEIGHT} from '#/components/images/AutoSizedImage'
 import {Link} from '#/components/Link'
 import {Text} from '#/components/Typography'
-import {IS_NATIVE} from '#/env'
+import {IS_IPAD, IS_NATIVE} from '#/env'
 import {ExternalGif} from './ExternalGif'
 import {ExternalPlayer} from './ExternalPlayer'
 import {GifEmbed} from './Gif'
@@ -100,7 +101,10 @@ export const ExternalEmbed = ({
           ]}>
           {imageUri && !embedPlayerParams ? (
             <Image
-              style={[a.aspect_card]}
+              style={[
+                a.aspect_card,
+                IS_IPAD && {maxHeight: IPAD_MEDIA_MAX_HEIGHT},
+              ]}
               source={{uri: imageUri}}
               accessibilityIgnoresInvertColors
               loading="lazy"

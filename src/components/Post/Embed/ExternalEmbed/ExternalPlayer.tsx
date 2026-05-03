@@ -32,8 +32,9 @@ import {atoms as a, useTheme} from '#/alf'
 import {useDialogControl} from '#/components/Dialog'
 import {EmbedConsentDialog} from '#/components/dialogs/EmbedConsent'
 import {Fill} from '#/components/Fill'
+import {IPAD_MEDIA_MAX_HEIGHT} from '#/components/images/AutoSizedImage'
 import {PlayButtonIcon} from '#/components/video/PlayButtonIcon'
-import {IS_NATIVE} from '#/env'
+import {IS_IPAD, IS_NATIVE} from '#/env'
 
 interface ShouldStartLoadRequest {
   url: string
@@ -219,7 +220,11 @@ export function ExternalPlayer({
       <Animated.View
         ref={viewRef}
         collapsable={false}
-        style={[aspect, a.overflow_hidden]}>
+        style={[
+          aspect,
+          a.overflow_hidden,
+          IS_IPAD && {maxHeight: IPAD_MEDIA_MAX_HEIGHT},
+        ]}>
         {link.thumb && (!isPlayerActive || isLoading) ? (
           <>
             <Image
