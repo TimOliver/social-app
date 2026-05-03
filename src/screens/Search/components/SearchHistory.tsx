@@ -3,6 +3,7 @@ import {moderateProfile, type ModerationOpts} from '@atproto/api'
 import {Trans, useLingui} from '@lingui/react/macro'
 
 import {createHitslop, HITSLOP_10} from '#/lib/constants'
+import {useReadableContentInsets} from '#/lib/hooks/useReadableContentInsets'
 import {makeProfileLink} from '#/lib/routes/links'
 import {sanitizeDisplayName} from '#/lib/strings/display-names'
 import {sanitizeHandle} from '#/lib/strings/handles'
@@ -17,6 +18,7 @@ import {Link} from '#/components/Link'
 import {ProfileBadges} from '#/components/ProfileBadges'
 import {Text} from '#/components/Typography'
 import {useAnalytics} from '#/analytics'
+import {IS_IPAD} from '#/env'
 import type * as bsky from '#/types/bsky'
 
 export function SearchHistory({
@@ -37,6 +39,11 @@ export function SearchHistory({
   const ax = useAnalytics()
   const {t: l} = useLingui()
   const moderationOpts = useModerationOpts()
+  const readableInsets = useReadableContentInsets()
+  const insetStyle = IS_IPAD && {
+    paddingLeft: readableInsets.left,
+    paddingRight: readableInsets.right,
+  }
 
   return (
     <Layout.Content
@@ -44,7 +51,7 @@ export function SearchHistory({
       keyboardShouldPersistTaps="handled">
       <View style={[a.w_full, a.gap_md]}>
         {(searchHistory.length > 0 || selectedProfiles.length > 0) && (
-          <View style={[a.px_lg, a.pt_sm]}>
+          <View style={[a.px_lg, a.pt_sm, insetStyle]}>
             <Text style={[a.text_md, a.font_semi_bold]}>
               <Trans>Recent searches</Trans>
             </Text>
@@ -63,6 +70,7 @@ export function SearchHistory({
                   a.flex_row,
                   a.flex_nowrap,
                   a.gap_xl,
+                  insetStyle,
                 ]}>
                 {moderationOpts &&
                   selectedProfiles.map((profile, index) => (
@@ -86,7 +94,7 @@ export function SearchHistory({
         )}
 
         {searchHistory.length > 0 && (
-          <View style={[a.px_lg, a.pt_sm]}>
+          <View style={[a.px_lg, a.pt_sm, insetStyle]}>
             {searchHistory.slice(0, 5).map((historyItem, index) => (
               <View key={index} style={[a.flex_row, a.align_center]}>
                 <Pressable
