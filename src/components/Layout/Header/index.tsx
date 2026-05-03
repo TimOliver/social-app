@@ -34,7 +34,7 @@ import {
 } from '#/components/Layout/const'
 import {ScrollbarOffsetContext} from '#/components/Layout/context'
 import {Text} from '#/components/Typography'
-import {IS_IOS} from '#/env'
+import {IS_IOS, IS_IPAD} from '#/env'
 import {PlatformInfo} from '../../../../modules/expo-bluesky-swiss-army'
 
 export function Outer({
@@ -53,23 +53,26 @@ export function Outer({
   const {gtMobile} = useBreakpoints()
   const {isWithinOffsetView} = useContext(ScrollbarOffsetContext)
   const {centerColumnOffset} = useLayoutBreakpoints()
-  // Inset the header to clear corner UI: iPhone landscape notch comes from
-  // safeArea; iPadOS 26 windowed-mode traffic-light controls don't, so we
-  // query them via UIView.LayoutRegion.margins(cornerAdaptation:) and
-  // re-query whenever the window resizes.
+  // iPadOS 26 windowed-mode traffic-light controls aren't in safeArea, so we
+  // query them via UIView.LayoutRegion.margins(cornerAdaptation:) and re-query
+  // on window resize. iPad-only — iPhone notch padding is handled at the
+  // screen container level.
   const safeArea = useSafeAreaInsets()
   const {width, height} = useWindowDimensions()
   const cornerMargins = useMemo(
-    () => PlatformInfo.getCornerAdaptedMargins(),
+    () =>
+      IS_IPAD ? PlatformInfo.getCornerAdaptedMargins() : {left: 0, right: 0},
     [width, height],
   )
-  const safeAreaGutters = {
-    ...gutters,
-    paddingLeft:
-      gutters.paddingLeft + Math.max(safeArea.left, cornerMargins.left),
-    paddingRight:
-      gutters.paddingRight + Math.max(safeArea.right, cornerMargins.right),
-  }
+  const safeAreaGutters = IS_IPAD
+    ? {
+        ...gutters,
+        paddingLeft:
+          gutters.paddingLeft + Math.max(safeArea.left, cornerMargins.left),
+        paddingRight:
+          gutters.paddingRight + Math.max(safeArea.right, cornerMargins.right),
+      }
+    : gutters
 
   return (
     <View
