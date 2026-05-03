@@ -7,7 +7,7 @@ import {
   type ViewStyle,
 } from 'react-native'
 
-import {useReadableContentInsets} from '#/lib/hooks/useReadableContentInsets'
+import {useReadableInsetStyle} from '#/lib/hooks/useReadableContentInsets'
 import {s} from '#/lib/styles'
 import {atoms as a, useTheme} from '#/alf'
 import {Bubble_Stroke2_Corner2_Rounded as Bubble} from '#/components/icons/Bubble'
@@ -16,7 +16,6 @@ import {
   Heart2_Stroke2_Corner0_Rounded as HeartIconOutline,
 } from '#/components/icons/Heart2'
 import {Repost_Stroke2_Corner2_Rounded as Repost} from '#/components/icons/Repost'
-import {IS_IPAD} from '#/env'
 
 export function LoadingPlaceholder({
   width,
@@ -278,7 +277,7 @@ export function ChatListItemLoadingPlaceholder({
   style?: StyleProp<ViewStyle>
 }) {
   const t = useTheme()
-  const readableInsets = useReadableContentInsets()
+  const insetStyle = useReadableInsetStyle()
   const random = useMemo(() => Math.random(), [])
   return (
     <View
@@ -288,10 +287,7 @@ export function ChatListItemLoadingPlaceholder({
         a.px_lg,
         a.mt_lg,
         t.atoms.bg,
-        IS_IPAD && {
-          paddingLeft: readableInsets.left,
-          paddingRight: readableInsets.right,
-        },
+        insetStyle,
         style,
       ]}>
       <LoadingPlaceholder width={52} height={52} style={a.rounded_full} />

@@ -22,7 +22,6 @@ import {PressableWithHover} from '#/view/com/util/PressableWithHover'
 import {BlockDrawerGesture} from '#/view/shell/BlockDrawerGesture'
 import {atoms as a, useTheme} from '#/alf'
 import {Text} from '#/components/Typography'
-import {IS_IPAD} from '#/env'
 
 export interface TabBarProps {
   testID?: string
@@ -328,7 +327,7 @@ export function TabBar({
           ref={scrollElRef}
           contentContainerStyle={[
             styles.contentContainer,
-            IS_IPAD && {
+            {
               paddingLeft: CONTENT_PADDING + readableInsets.left,
               paddingRight: CONTENT_PADDING + readableInsets.right,
             },

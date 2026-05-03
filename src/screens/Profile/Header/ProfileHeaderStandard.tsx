@@ -12,7 +12,10 @@ import {useLingui} from '@lingui/react'
 import {Trans} from '@lingui/react/macro'
 
 import {useHaptics} from '#/lib/haptics'
-import {useReadableContentInsets} from '#/lib/hooks/useReadableContentInsets'
+import {
+  useReadableContentInsets,
+  useReadableInsetStyle,
+} from '#/lib/hooks/useReadableContentInsets'
 import {sanitizeDisplayName} from '#/lib/strings/display-names'
 import {sanitizeHandle} from '#/lib/strings/handles'
 import {logger} from '#/logger'
@@ -39,7 +42,7 @@ import * as Prompt from '#/components/Prompt'
 import {RichText} from '#/components/RichText'
 import * as Toast from '#/components/Toast'
 import {Text} from '#/components/Typography'
-import {IS_IOS, IS_IPAD} from '#/env'
+import {IS_IOS} from '#/env'
 import {useActorStatus} from '#/features/liveNow'
 import {GermButton} from '../components/GermButton'
 import {EditProfileDialog} from './EditProfileDialog'
@@ -105,10 +108,7 @@ let ProfileHeaderStandard = ({
 
   const {isActive: live} = useActorStatus(profile)
   const readableInsets = useReadableContentInsets()
-  // RN's Text caches its measured layout and won't reflow when the parent
-  // width changes mid-session (rotation). Re-key the bio on the inset to
-  // force a fresh measurement.
-  const bioKey = `bio-${readableInsets.left}`
+  const insetStyle = useReadableInsetStyle()
 
   return (
     <>
@@ -118,15 +118,7 @@ let ProfileHeaderStandard = ({
         hideBackButton={hideBackButton}
         isPlaceholderProfile={isPlaceholderProfile}>
         <View
-          style={[
-            a.px_lg,
-            a.pt_md,
-            a.pb_sm,
-            IS_IPAD && {
-              paddingLeft: readableInsets.left,
-              paddingRight: readableInsets.right,
-            },
-          ]}
+          style={[a.px_lg, a.pt_md, a.pb_sm, insetStyle]}
           pointerEvents={IS_IOS ? 'auto' : 'box-none'}>
           <View
             style={[
@@ -175,7 +167,9 @@ let ProfileHeaderStandard = ({
             <View style={a.gap_md}>
               <ProfileHeaderMetrics profile={profile} />
               {descriptionRT && !moderation.ui('profileView').blur ? (
-                <View key={bioKey} pointerEvents="auto">
+                // Re-key on inset width — RN's Text caches its measured layout
+                // and won't reflow when the parent width changes mid-session.
+                <View key={readableInsets.left} pointerEvents="auto">
                   <RichText
                     testID="profileHeaderDescription"
                     style={[a.text_md]}

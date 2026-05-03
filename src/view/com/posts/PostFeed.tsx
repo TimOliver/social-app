@@ -7,7 +7,6 @@ import {
   type ListRenderItemInfo,
   type StyleProp,
   StyleSheet,
-  useWindowDimensions,
   View,
   type ViewStyle,
 } from 'react-native'
@@ -22,7 +21,6 @@ import {useQueryClient} from '@tanstack/react-query'
 import {DISCOVER_FEED_URI, KNOWN_SHUTDOWN_FEEDS} from '#/lib/constants'
 import {useInitialNumToRender} from '#/lib/hooks/useInitialNumToRender'
 import {useNonReactiveCallback} from '#/lib/hooks/useNonReactiveCallback'
-import {useReadableContentInsets} from '#/lib/hooks/useReadableContentInsets'
 import {isNetworkError} from '#/lib/strings/errors'
 import {logger} from '#/logger'
 import {usePostAuthorShadowFilter} from '#/state/cache/profile-shadow'
@@ -48,11 +46,12 @@ import {List, type ListRef} from '#/view/com/util/List'
 import {PostFeedLoadingPlaceholder} from '#/view/com/util/LoadingPlaceholder'
 import {LoadMoreRetryBtn} from '#/view/com/util/LoadMoreRetryBtn'
 import {type VideoFeedSourceContext} from '#/screens/VideoFeed/types'
-import {atoms as a, useBreakpoints, useLayoutBreakpoints, useTheme} from '#/alf'
+import {useBreakpoints, useLayoutBreakpoints} from '#/alf'
 import {
   AgeAssuranceDismissibleFeedBanner,
   useInternalState as useAgeAssuranceBannerState,
 } from '#/components/ageAssurance/AgeAssuranceDismissibleFeedBanner'
+import {EdgeToEdgeBleed} from '#/components/EdgeToEdgeBleed'
 import {ProgressGuide, SuggestedFollows} from '#/components/FeedInterstitials'
 import {
   PostFeedVideoGridRow,
@@ -235,9 +234,6 @@ let PostFeed = ({
   const queryClient = useQueryClient()
   const {currentAccount, hasSession} = useSession()
   const initialNumToRender = useInitialNumToRender()
-  const t = useTheme()
-  const readableInsets = useReadableContentInsets()
-  const {width: screenWidth} = useWindowDimensions()
   const feedFeedback = useFeedFeedbackContext()
   const [isPTRing, setIsPTRing] = useState(false)
   // eslint-disable-next-line react-hooks/purity
@@ -797,15 +793,7 @@ let PostFeed = ({
         return (
           <>
             <ComposerPrompt />
-            <View
-              style={[
-                t.atoms.border_contrast_low,
-                a.border_t,
-                IS_IPAD
-                  ? {width: screenWidth, marginLeft: -readableInsets.left}
-                  : a.w_full,
-              ]}
-            />
+            <EdgeToEdgeBleed />
           </>
         )
       } else if (row.type === 'interstitialTrendingVideos') {
@@ -899,9 +887,6 @@ let PostFeed = ({
       feedCacheKey,
       onPressShowLess,
       feedItems,
-      t.atoms.border_contrast_low,
-      readableInsets.left,
-      screenWidth,
     ],
   )
 

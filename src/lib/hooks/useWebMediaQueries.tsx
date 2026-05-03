@@ -1,7 +1,6 @@
 import {useMediaQuery} from 'react-responsive'
 
-import {isNative} from '#/platform/detection'
-import {IS_IPAD} from '#/env'
+import {IS_IPAD, IS_NATIVE} from '#/env'
 
 /**
  * @deprecated use `useBreakpoints` from `#/alf` instead
@@ -21,7 +20,7 @@ export function useWebMediaQueries() {
       isDesktop: false,
     }
   }
-  if (isNative) {
+  if (IS_NATIVE) {
     return {
       isMobile: true,
       isTablet: false,

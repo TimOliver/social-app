@@ -3,11 +3,11 @@ import {type StyleProp, View, type ViewStyle} from 'react-native'
 import {type AnimatedRef, useAnimatedRef} from 'react-native-reanimated'
 import {type AppBskyEmbedImages} from '@atproto/api'
 
+import {IPAD_MEDIA_MAX_HEIGHT} from '#/lib/hooks/useReadableContentInsets'
 import {type Dimensions} from '#/view/com/lightbox/ImageViewing/@types'
 import {atoms as a, useBreakpoints} from '#/alf'
 import {PostEmbedViewContext} from '#/components/Post/Embed/types'
 import {IS_IPAD} from '#/env'
-import {IPAD_MEDIA_MAX_HEIGHT} from './AutoSizedImage'
 import {GalleryItem} from './ImageLayoutGridItem'
 
 interface ImageLayoutGridProps {

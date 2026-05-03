@@ -3,7 +3,7 @@ import {moderateProfile, type ModerationOpts} from '@atproto/api'
 import {Trans, useLingui} from '@lingui/react/macro'
 
 import {createHitslop, HITSLOP_10} from '#/lib/constants'
-import {useReadableContentInsets} from '#/lib/hooks/useReadableContentInsets'
+import {useReadableInsetStyle} from '#/lib/hooks/useReadableContentInsets'
 import {makeProfileLink} from '#/lib/routes/links'
 import {sanitizeDisplayName} from '#/lib/strings/display-names'
 import {sanitizeHandle} from '#/lib/strings/handles'
@@ -18,7 +18,6 @@ import {Link} from '#/components/Link'
 import {ProfileBadges} from '#/components/ProfileBadges'
 import {Text} from '#/components/Typography'
 import {useAnalytics} from '#/analytics'
-import {IS_IPAD} from '#/env'
 import type * as bsky from '#/types/bsky'
 
 export function SearchHistory({
@@ -39,11 +38,7 @@ export function SearchHistory({
   const ax = useAnalytics()
   const {t: l} = useLingui()
   const moderationOpts = useModerationOpts()
-  const readableInsets = useReadableContentInsets()
-  const insetStyle = IS_IPAD && {
-    paddingLeft: readableInsets.left,
-    paddingRight: readableInsets.right,
-  }
+  const insetStyle = useReadableInsetStyle()
 
   return (
     <Layout.Content

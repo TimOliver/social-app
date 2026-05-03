@@ -21,6 +21,7 @@ import {msg} from '@lingui/core/macro'
 import {useLingui} from '@lingui/react'
 import {useNavigation} from '@react-navigation/native'
 
+import {IPAD_MEDIA_MAX_HEIGHT} from '#/lib/hooks/useReadableContentInsets'
 import {type NavigationProp} from '#/lib/routes/types'
 import {
   type EmbedPlayerParams,
@@ -32,7 +33,6 @@ import {atoms as a, useTheme} from '#/alf'
 import {useDialogControl} from '#/components/Dialog'
 import {EmbedConsentDialog} from '#/components/dialogs/EmbedConsent'
 import {Fill} from '#/components/Fill'
-import {IPAD_MEDIA_MAX_HEIGHT} from '#/components/images/AutoSizedImage'
 import {PlayButtonIcon} from '#/components/video/PlayButtonIcon'
 import {IS_IPAD, IS_NATIVE} from '#/env'
 

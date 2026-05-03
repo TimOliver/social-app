@@ -11,6 +11,7 @@ import {msg} from '@lingui/core/macro'
 import {useLingui} from '@lingui/react'
 import {Trans} from '@lingui/react/macro'
 
+import {IPAD_MEDIA_MAX_HEIGHT} from '#/lib/hooks/useReadableContentInsets'
 import {type Dimensions} from '#/lib/media/types'
 import {useLargeAltBadgeEnabled} from '#/state/preferences/large-alt-badge'
 import {atoms as a, useTheme, web} from '#/alf'
@@ -18,10 +19,6 @@ import {ArrowsDiagonalOut_Stroke2_Corner0_Rounded as Fullscreen} from '#/compone
 import {MediaInsetBorder} from '#/components/MediaInsetBorder'
 import {Text} from '#/components/Typography'
 import {IS_IPAD, IS_NATIVE} from '#/env'
-
-// Caps post media (images, videos, link-card thumbnails) to a comfortable
-// size on iPad rather than letting them stretch edge-to-edge.
-export const IPAD_MEDIA_MAX_HEIGHT = 320
 
 export function ConstrainedImage({
   aspectRatio,

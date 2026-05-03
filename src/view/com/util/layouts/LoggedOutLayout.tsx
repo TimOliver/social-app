@@ -21,6 +21,13 @@ export const LoggedOutLayout = ({
   const t = useTheme()
   const {isMobile, isTabletOrMobile} = useWebMediaQueries()
   const [isKeyboardVisible] = useIsKeyboardVisible()
+  // The side panel reads as part of the page in light mode (its lighter
+  // background contrasts with the white content), but in dark mode both
+  // panels are dark, so add a separator border to keep them distinct.
+  const darkBorder = t.name === 'dark' && [
+    t.atoms.border_contrast_low,
+    {borderLeftWidth: 1},
+  ]
 
   if (isMobile || IS_IPAD) {
     if (scrollable) {
@@ -69,15 +76,7 @@ export const LoggedOutLayout = ({
         </Text>
       </View>
       {scrollable ? (
-        <View
-          style={[
-            styles.scrollableContent,
-            t.atoms.bg,
-            t.name === 'dark' && [
-              t.atoms.border_contrast_low,
-              {borderLeftWidth: 1},
-            ],
-          ]}>
+        <View style={[styles.scrollableContent, t.atoms.bg, darkBorder]}>
           <ScrollView
             style={a.flex_1}
             contentContainerStyle={styles.scrollViewContentContainer}
@@ -89,15 +88,7 @@ export const LoggedOutLayout = ({
           </ScrollView>
         </View>
       ) : (
-        <View
-          style={[
-            styles.content,
-            t.atoms.bg,
-            t.name === 'dark' && [
-              t.atoms.border_contrast_low,
-              {borderLeftWidth: 1},
-            ],
-          ]}>
+        <View style={[styles.content, t.atoms.bg, darkBorder]}>
           <View style={styles.contentWrapper}>{children}</View>
         </View>
       )}

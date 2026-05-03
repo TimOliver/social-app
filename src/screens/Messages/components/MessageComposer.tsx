@@ -20,7 +20,10 @@ import {countGraphemes} from 'unicode-segmenter/grapheme'
 import {HITSLOP_10, MAX_DM_GRAPHEME_LENGTH} from '#/lib/constants'
 import {useHaptics} from '#/lib/haptics'
 import {useNonReactiveCallback} from '#/lib/hooks/useNonReactiveCallback'
-import {useReadableContentInsets} from '#/lib/hooks/useReadableContentInsets'
+import {
+  useReadableContentInsets,
+  useReadableInsetStyle,
+} from '#/lib/hooks/useReadableContentInsets'
 import {isBskyPostUrl} from '#/lib/strings/url-helpers'
 import {useEmail} from '#/state/email-verification'
 import {
@@ -34,14 +37,7 @@ import {GlassView} from '#/components/GlassView'
 import {EmojiArc_Stroke2_Corner0_Rounded as EmojiSmileIcon} from '#/components/icons/Emoji'
 import {PaperPlaneVertical_Filled_Stroke2_Corner1_Rounded as PaperPlaneIcon} from '#/components/icons/PaperPlane'
 import * as Toast from '#/components/Toast'
-import {
-  IS_ANDROID,
-  IS_IOS,
-  IS_IPAD,
-  IS_LIQUID_GLASS,
-  IS_NATIVE,
-  IS_WEB,
-} from '#/env'
+import {IS_ANDROID, IS_IOS, IS_LIQUID_GLASS, IS_NATIVE, IS_WEB} from '#/env'
 
 const MIN_HEIGHT = 40
 
@@ -294,6 +290,7 @@ export function ComposerContainer({children}: {children: React.ReactNode}) {
   const {progress} = useReanimatedKeyboardAnimation()
   const t = useTheme()
   const readableInsets = useReadableContentInsets()
+  const insetStyle = useReadableInsetStyle()
   // Keyboard-closed inset is used as horizontal padding by the existing
   // animation. On iPad we expand it to the readable inset so the message
   // input row aligns with the rest of the readable column.
@@ -324,16 +321,7 @@ export function ComposerContainer({children}: {children: React.ReactNode}) {
       <>
         <LinearGradient
           style={platform({
-            native: [
-              a.pt_sm,
-              a.px_lg,
-              a.pb_lg,
-              a.w_full,
-              IS_IPAD && {
-                paddingLeft: readableInsets.left,
-                paddingRight: readableInsets.right,
-              },
-            ],
+            native: [a.pt_sm, a.px_lg, a.pb_lg, a.w_full, insetStyle],
             web: [
               a.pt_xs,
               a.pl_lg,

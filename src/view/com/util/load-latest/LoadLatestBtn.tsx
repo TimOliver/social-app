@@ -40,14 +40,18 @@ export function LoadLatestBtn({
   // move button inline if it starts overlapping the left nav
   const isTallViewport = useMediaQuery({minHeight: 700})
 
+  // `isTablet` is from useWebMediaQueries which forces it true on native
+  // iPad. For the *web*-tablet styles below we want only true tablets —
+  // iPad gets the mobile treatment (centered FAB at the safe-area edge).
+  const isWebTablet = isTablet && !IS_IPAD
+
   // Adjust height of the fab if we have a session only on mobile web. If we don't have a session, we want to adjust
   // it on both tablet and mobile since we are showing the bottom bar (see createNativeStackNavigatorWithAuth)
   const showBottomBar = hasSession ? isMobile || IS_IPAD : isTabletOrMobile
 
-  const bottomPosition =
-    isTablet && !IS_IPAD
-      ? {bottom: 50}
-      : {bottom: clamp(insets.bottom, 15, 60) + 15}
+  const bottomPosition = isWebTablet
+    ? {bottom: 50}
+    : {bottom: clamp(insets.bottom, 15, 60) + 15}
 
   return (
     <Animated.View
@@ -60,8 +64,7 @@ export function LoadLatestBtn({
           (isTallViewport
             ? styles.loadLatestOutOfLine
             : styles.loadLatestInline),
-        isTablet &&
-          !IS_IPAD &&
+        isWebTablet &&
           (centerColumnOffset
             ? styles.loadLatestInlineOffset
             : styles.loadLatestInline),

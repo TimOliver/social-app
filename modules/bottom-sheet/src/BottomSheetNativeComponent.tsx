@@ -75,7 +75,7 @@ export class BottomSheetNativeComponent extends Component<
     const {state} = event.nativeEvent
     const isOpen = state !== 'closed'
     this.setState({open: isOpen})
-    if (!isOpen) {
+    if (!isOpen && this.state.sheetWidth !== undefined) {
       this.setState({sheetWidth: undefined})
     }
     this.props.onStateChange?.(event)

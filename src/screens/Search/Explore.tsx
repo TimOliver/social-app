@@ -1,5 +1,5 @@
 import {useCallback, useMemo, useRef, useState} from 'react'
-import {useWindowDimensions, View, type ViewabilityConfig} from 'react-native'
+import {View, type ViewabilityConfig} from 'react-native'
 import {
   type AppBskyActorDefs,
   type AppBskyFeedDefs,
@@ -11,7 +11,6 @@ import {Trans} from '@lingui/react/macro'
 import {useQueryClient} from '@tanstack/react-query'
 import * as bcp47Match from 'bcp-47-match'
 
-import {useReadableContentInsets} from '#/lib/hooks/useReadableContentInsets'
 import {popularInterests, useInterestsDisplayNames} from '#/lib/interests'
 import {cleanError} from '#/lib/strings/errors'
 import {sanitizeHandle} from '#/lib/strings/handles'
@@ -55,6 +54,7 @@ import {ExploreTrendingVideos} from '#/screens/Search/modules/ExploreTrendingVid
 import {atoms as a, native, platform, useTheme} from '#/alf'
 import {Admonition} from '#/components/Admonition'
 import {Button} from '#/components/Button'
+import {EdgeToEdgeBleed} from '#/components/EdgeToEdgeBleed'
 import * as FeedCard from '#/components/FeedCard'
 import {ChevronBottom_Stroke2_Corner0_Rounded as ChevronDownIcon} from '#/components/icons/Chevron'
 import {CircleInfo_Stroke2_Corner0_Rounded as CircleInfo} from '#/components/icons/CircleInfo'
@@ -71,7 +71,6 @@ import * as ProfileCard from '#/components/ProfileCard'
 import {SubtleHover} from '#/components/SubtleHover'
 import {Text} from '#/components/Typography'
 import {type Metrics, useAnalytics} from '#/analytics'
-import {IS_IPAD} from '#/env'
 import {ExploreScreenLiveEventFeedsBanner} from '#/features/liveEvents/components/ExploreScreenLiveEventFeedsBanner'
 import * as ModuleHeader from './components/ModuleHeader'
 import {
@@ -224,8 +223,6 @@ export function Explore({
   const ax = useAnalytics()
   const {_} = useLingui()
   const t = useTheme()
-  const readableInsets = useReadableContentInsets()
-  const {width: screenWidth} = useWindowDimensions()
   const {data: preferences, error: preferencesError} = usePreferencesQuery()
   const moderationOpts = useModerationOpts()
   const [selectedInterest, setSelectedInterest] = useState<string | null>(null)
@@ -759,21 +756,8 @@ export function Explore({
       }
       switch (item.type) {
         case 'topBorder':
-          // Counter the List's readable-content padding so this separator
-          // visually anchors the search bar to the navigation header. We
-          // need explicit width here because `w_full` would still resolve
-          // to the padded inner width.
-          return (
-            <View
-              style={[
-                t.atoms.border_contrast_low,
-                a.border_t,
-                IS_IPAD
-                  ? {width: screenWidth, marginLeft: -readableInsets.left}
-                  : a.w_full,
-              ]}
-            />
-          )
+          return <EdgeToEdgeBleed />
+
         case 'header': {
           return (
             <ModuleHeader.Container bottomBorder={item.bottomBorder}>
@@ -1061,8 +1045,6 @@ export function Explore({
       t.atoms.text_contrast_medium,
       t.atoms.bg,
       t.palette.negative_400,
-      readableInsets.left,
-      screenWidth,
       focusSearchInput,
       selectedInterest,
       moderationOpts,
