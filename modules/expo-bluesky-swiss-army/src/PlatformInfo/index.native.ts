@@ -9,6 +9,11 @@ export function getIsReducedMotionEnabled(): boolean {
   return NativeModule.getIsReducedMotionEnabled()
 }
 
+export function getCornerAdaptedMargins(): {left: number; right: number} {
+  if (Platform.OS !== 'ios') return {left: 0, right: 0}
+  return NativeModule.getCornerAdaptedMargins()
+}
+
 export function setAudioActive(active: boolean): void {
   if (Platform.OS !== 'ios') return
   NativeModule.setAudioActive(active)

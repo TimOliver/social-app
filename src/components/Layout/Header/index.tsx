@@ -1,5 +1,11 @@
-import {createContext, useCallback, useContext} from 'react'
-import {type GestureResponderEvent, Keyboard, View} from 'react-native'
+import {createContext, useCallback, useContext, useMemo} from 'react'
+import {
+  type GestureResponderEvent,
+  Keyboard,
+  useWindowDimensions,
+  View,
+} from 'react-native'
+import {useSafeAreaInsets} from 'react-native-safe-area-context'
 import {msg} from '@lingui/core/macro'
 import {useLingui} from '@lingui/react'
 import {useNavigation} from '@react-navigation/native'
@@ -29,6 +35,7 @@ import {
 import {ScrollbarOffsetContext} from '#/components/Layout/context'
 import {Text} from '#/components/Typography'
 import {IS_IOS} from '#/env'
+import {PlatformInfo} from '../../../../modules/expo-bluesky-swiss-army'
 
 export function Outer({
   children,
@@ -46,6 +53,23 @@ export function Outer({
   const {gtMobile} = useBreakpoints()
   const {isWithinOffsetView} = useContext(ScrollbarOffsetContext)
   const {centerColumnOffset} = useLayoutBreakpoints()
+  // Inset the header to clear corner UI: iPhone landscape notch comes from
+  // safeArea; iPadOS 26 windowed-mode traffic-light controls don't, so we
+  // query them via UIView.LayoutRegion.margins(cornerAdaptation:) and
+  // re-query whenever the window resizes.
+  const safeArea = useSafeAreaInsets()
+  const {width, height} = useWindowDimensions()
+  const cornerMargins = useMemo(
+    () => PlatformInfo.getCornerAdaptedMargins(),
+    [width, height],
+  )
+  const safeAreaGutters = {
+    ...gutters,
+    paddingLeft:
+      gutters.paddingLeft + Math.max(safeArea.left, cornerMargins.left),
+    paddingRight:
+      gutters.paddingRight + Math.max(safeArea.right, cornerMargins.right),
+  }
 
   return (
     <View
@@ -57,7 +81,7 @@ export function Outer({
         a.align_center,
         a.gap_sm,
         sticky && web([a.sticky, {top: 0}, a.z_10, t.atoms.bg]),
-        gutters,
+        safeAreaGutters,
         platform({
           native: [a.pb_xs, {minHeight: 48}],
           web: [a.py_xs, {minHeight: 52}],

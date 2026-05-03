@@ -8,6 +8,10 @@ export function getIsReducedMotionEnabled(): boolean {
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches
 }
 
+export function getCornerAdaptedMargins(): {left: number; right: number} {
+  return {left: 0, right: 0}
+}
+
 export function setAudioActive(active: boolean): void {
   throw new NotImplementedError({active})
 }
