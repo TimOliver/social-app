@@ -43,7 +43,7 @@ import {useAgeAssurance} from '#/ageAssurance'
 import {NoAccessScreen} from '#/ageAssurance/components/NoAccessScreen'
 import {RedirectOverlay} from '#/ageAssurance/components/RedirectOverlay'
 import {PassiveAnalytics} from '#/analytics/PassiveAnalytics'
-import {IS_ANDROID, IS_IOS, IS_LIQUID_GLASS} from '#/env'
+import {IS_ANDROID, IS_IOS, IS_IPAD, IS_LIQUID_GLASS} from '#/env'
 import {RoutesContainer, TabsNavigator} from '#/Navigation'
 import {BottomSheetOutlet} from '../../../modules/bottom-sheet'
 import {updateActiveViewAsync} from '../../../modules/expo-bluesky-swiss-army/src/VisibilityView'
@@ -160,7 +160,9 @@ function DrawerLayout({children}: {children: React.ReactNode}) {
   return (
     <Drawer
       renderDrawerContent={renderDrawerContent}
-      drawerStyle={{width: Math.min(400, winDim.width * 0.8)}}
+      drawerStyle={{
+        width: IS_IPAD ? 320 : Math.min(400, winDim.width * 0.8),
+      }}
       configureGestureHandler={handler => {
         handler = handler.requireExternalGestureToFail(trendingScrollGesture)
 
