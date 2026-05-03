@@ -1,7 +1,19 @@
 import {NotImplementedError} from '../NotImplemented'
-import {AudioCategory} from './types'
+import {type AudioCategory, type ReadableContentInsets} from './types'
 
 export function getIsReducedMotionEnabled(): boolean {
+  throw new NotImplementedError()
+}
+
+/**
+ * Returns the insets that UIView's `readableContentGuide` would apply to a
+ * full-screen view at the current screen size and Dynamic Type setting. On
+ * iPad these constrain content to a comfortable reading width; on iPhone
+ * they're typically just the layout margins.
+ *
+ * @platform ios
+ */
+export function getReadableContentInsets(): ReadableContentInsets {
   throw new NotImplementedError()
 }
 

@@ -10,11 +10,12 @@ import {updateActiveVideoViewAsync} from '@bsky.app/video'
 
 import {useDedupe} from '#/lib/hooks/useDedupe'
 import {useNonReactiveCallback} from '#/lib/hooks/useNonReactiveCallback'
+import {useReadableContentInsets} from '#/lib/hooks/useReadableContentInsets'
 import {useScrollHandlers} from '#/lib/ScrollContext'
 import {addStyle} from '#/lib/styles'
 import {useLightbox} from '#/state/lightbox'
 import {useTheme} from '#/alf'
-import {IS_IOS} from '#/env'
+import {IS_IOS, IS_IPAD} from '#/env'
 import {FlatList_INTERNAL} from './Views'
 
 export type ListMethods = FlatList_INTERNAL
@@ -63,6 +64,7 @@ let List = forwardRef<ListMethods, ListProps>(
     const t = useTheme()
     const dedupe = useDedupe(400)
     const scrollsToTop = useAllowScrollToTop()
+    const readableInsets = useReadableContentInsets()
 
     const handleScrolledDownChange = useNonReactiveCallback(
       (didScrollDown: boolean) => {
@@ -167,6 +169,13 @@ let List = forwardRef<ListMethods, ListProps>(
           right: 1,
           ...props.scrollIndicatorInsets,
         }}
+        contentContainerStyle={[
+          props.contentContainerStyle,
+          IS_IPAD && {
+            paddingLeft: readableInsets.left,
+            paddingRight: readableInsets.right,
+          },
+        ]}
         indicatorStyle={t.scheme === 'dark' ? 'white' : 'black'}
         contentOffset={contentOffset}
         refreshControl={refreshControl}

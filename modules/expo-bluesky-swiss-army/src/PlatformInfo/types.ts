@@ -5,6 +5,13 @@
  * @see https://developer.apple.com/documentation/avfoundation/avaudiosession/category
  * @platform ios
  */
+export type ReadableContentInsets = {
+  left: number
+  right: number
+  top: number
+  bottom: number
+}
+
 export enum AudioCategory {
   Ambient = 'AVAudioSessionCategoryAmbient',
   Playback = 'AVAudioSessionCategoryPlayback',
