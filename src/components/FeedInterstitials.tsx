@@ -11,6 +11,7 @@ import {type AppBskyFeedDefs} from '@atproto/api'
 import {Trans, useLingui} from '@lingui/react/macro'
 import {useNavigation} from '@react-navigation/native'
 
+import {useReadableContentInsets} from '#/lib/hooks/useReadableContentInsets'
 import {type NavigationProp} from '#/lib/routes/types'
 import {useModerationOpts} from '#/state/preferences/moderation-opts'
 import {useGetPopularFeedsQuery} from '#/state/queries/feed'
@@ -34,11 +35,12 @@ import {ArrowRight_Stroke2_Corner0_Rounded as ArrowRight} from '#/components/ico
 import {Hashtag_Stroke2_Corner0_Rounded as Hashtag} from '#/components/icons/Hashtag'
 import {TimesLarge_Stroke2_Corner0_Rounded as X} from '#/components/icons/Times'
 import {InlineLinkText} from '#/components/Link'
+import {MediaInsetBorder} from '#/components/MediaInsetBorder'
 import * as ProfileCard from '#/components/ProfileCard'
 import {ProgressGuideList} from '#/components/ProgressGuide/List'
 import {Text} from '#/components/Typography'
 import {type Metrics, useAnalytics} from '#/analytics'
-import {IS_IOS} from '#/env'
+import {IS_IOS, IS_IPAD} from '#/env'
 import type * as bsky from '#/types/bsky'
 import {FollowDialogWithoutGuide} from './ProgressGuide/FollowDialog'
 
@@ -205,6 +207,7 @@ export function ProfileGrid({
   const moderationOpts = useModerationOpts()
   const {gtMobile} = useBreakpoints()
   const followDialogControl = useDialogControl()
+  const readableInsets = useReadableContentInsets()
 
   const isLoading = isSuggestionsLoading || !moderationOpts
   const isProfileHeaderContext = viewContext === 'profileHeader'
@@ -454,6 +457,18 @@ export function ProfileGrid({
         !isProfileHeaderContext && a.border_t,
         t.atoms.border_contrast_low,
         t.atoms.bg_contrast_25,
+        IS_IPAD && [
+          a.rounded_md,
+          a.overflow_hidden,
+          // Profile-header context renders outside the readable-inset List
+          // wrapper, so it needs to inset itself. Other contexts (feed,
+          // profile) are already inside that wrapper — adding margin there
+          // would double-inset.
+          isProfileHeaderContext && {
+            marginLeft: readableInsets.left,
+            marginRight: readableInsets.right,
+          },
+        ],
       ]}
       pointerEvents={IS_IOS ? 'auto' : 'box-none'}>
       <View
@@ -523,6 +538,7 @@ export function ProfileGrid({
           </BlockDrawerGesture>
         )}
       </LayoutAnimationConfig>
+      {IS_IPAD && <MediaInsetBorder />}
     </View>
   )
 }

@@ -183,6 +183,14 @@ export function getItemsForFeedback(feedRow: FeedRow): {
 // const REFRESH_AFTER = STALE.HOURS.ONE
 const CHECK_LATEST_AFTER = STALE.SECONDS.THIRTY
 
+// Row types that render their own visual edge (rounded card / trailing
+// border) and shouldn't get a duplicate divider from the post slice that
+// follows them.
+const ROW_TYPES_WITHOUT_TRAILING_BORDER = new Set([
+  'composerPrompt',
+  'interstitialFollows',
+])
+
 let PostFeed = ({
   feed,
   feedParams,
@@ -829,7 +837,9 @@ let PostFeed = ({
             hideTopBorder={
               (rowIndex === 0 && indexInSlice === 0) ||
               (indexInSlice === 0 &&
-                feedItems[rowIndex - 1]?.type === 'composerPrompt')
+                ROW_TYPES_WITHOUT_TRAILING_BORDER.has(
+                  feedItems[rowIndex - 1]?.type as string,
+                ))
             }
             rootPost={slice.items[0].post}
             onShowLess={onPressShowLess}
