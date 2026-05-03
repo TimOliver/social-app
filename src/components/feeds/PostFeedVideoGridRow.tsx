@@ -3,13 +3,14 @@ import {AppBskyEmbedVideo} from '@atproto/api'
 
 import {type FeedPostSliceItem} from '#/state/queries/post-feed'
 import {type VideoFeedSourceContext} from '#/screens/VideoFeed/types'
-import {atoms as a, useGutters} from '#/alf'
+import {atoms as a, useBreakpoints, useGutters} from '#/alf'
 import * as Grid from '#/components/Grid'
 import {
   VideoPostCard,
   VideoPostCardPlaceholder,
 } from '#/components/VideoPostCard'
 import {useAnalytics} from '#/analytics'
+import {IS_IPAD} from '#/env'
 
 export function PostFeedVideoGridRow({
   items: slices,
@@ -33,12 +34,15 @@ export function PostFeedVideoGridRow({
    */
   if (posts.length !== slices.length) return null
 
+  // Match PostFeed's batching: 3 cols on iPad / wide screens, 2 otherwise.
+  const colWidth = posts.length >= 3 ? 1 / 3 : 1 / 2
+
   return (
     <View style={[gutters]}>
       <View style={[a.flex_row, a.gap_sm]}>
         <Grid.Row gap={a.gap_sm.gap}>
           {posts.map(post => (
-            <Grid.Col key={post.post.uri} width={1 / 2}>
+            <Grid.Col key={post.post.uri} width={colWidth}>
               <VideoPostCard
                 post={post.post}
                 sourceContext={sourceContext}
@@ -57,11 +61,14 @@ export function PostFeedVideoGridRow({
 
 export function PostFeedVideoGridRowPlaceholder() {
   const gutters = useGutters(['base', 'base', 0, 'base'])
+  const {gtMobile} = useBreakpoints()
+  const cols = IS_IPAD || gtMobile ? 3 : 2
   return (
     <View style={[gutters]}>
       <View style={[a.flex_row, a.gap_sm]}>
-        <VideoPostCardPlaceholder />
-        <VideoPostCardPlaceholder />
+        {Array.from({length: cols}).map((_, i) => (
+          <VideoPostCardPlaceholder key={i} />
+        ))}
       </View>
     </View>
   )

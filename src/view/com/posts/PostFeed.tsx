@@ -472,7 +472,7 @@ let PostFeed = ({
           for (let i = 0; i < videos.length; i++) {
             const video = videos[i]
             const item = video.item
-            const cols = gtMobile ? 3 : 2
+            const cols = IS_IPAD || gtMobile ? 3 : 2
             const rowItem = {
               item,
               feedContext: video.feedContext,
