@@ -12,9 +12,8 @@ import {PressableScale} from '#/lib/custom-animations/PressableScale'
 import {useHaptics} from '#/lib/haptics'
 import {useMinimalShellFabTransform} from '#/lib/hooks/useMinimalShellTransform'
 import {clamp} from '#/lib/numbers'
-import {isNativeTablet} from '#/platform/detection'
 import {atoms as a, ios, useBreakpoints, useTheme} from '#/alf'
-import {IS_WEB} from '#/env'
+import {IS_IPAD, IS_WEB} from '#/env'
 
 export interface FABProps extends ComponentProps<typeof Pressable> {
   testID?: string
@@ -41,7 +40,7 @@ export function FABInner({testID, icon, onPress, style, ...props}: FABProps) {
         styles.outer,
         size,
         tabletSpacing,
-        (!gtMobile || isNativeTablet) && fabMinimalShellTransform,
+        (!gtMobile || IS_IPAD) && fabMinimalShellTransform,
       ]}>
       <PressableScale
         testID={testID}

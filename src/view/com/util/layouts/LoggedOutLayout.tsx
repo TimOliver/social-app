@@ -4,9 +4,8 @@ import {useColorSchemeStyle} from '#/lib/hooks/useColorSchemeStyle'
 import {useIsKeyboardVisible} from '#/lib/hooks/useIsKeyboardVisible'
 import {usePalette} from '#/lib/hooks/usePalette'
 import {useWebMediaQueries} from '#/lib/hooks/useWebMediaQueries'
-import {isNativeTablet} from '#/platform/detection'
 import {atoms as a} from '#/alf'
-import {IS_WEB} from '#/env'
+import {IS_IPAD, IS_WEB} from '#/env'
 import {Text} from '../text/Text'
 
 export const LoggedOutLayout = ({
@@ -32,7 +31,7 @@ export const LoggedOutLayout = ({
 
   const [isKeyboardVisible] = useIsKeyboardVisible()
 
-  if (isMobile || isNativeTablet) {
+  if (isMobile || IS_IPAD) {
     if (scrollable) {
       return (
         <ScrollView

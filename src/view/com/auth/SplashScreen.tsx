@@ -7,11 +7,11 @@ import {useLingui} from '@lingui/react'
 import {Trans} from '@lingui/react/macro'
 
 import {useHaptics} from '#/lib/haptics'
-import {isNativeTablet} from '#/platform/detection'
 import {Logo} from '#/view/icons/Logo'
 import {Logotype} from '#/view/icons/Logotype'
 import {atoms as a, useTheme} from '#/alf'
 import {Button, ButtonText} from '#/components/Button'
+import {IS_IPAD} from '#/env'
 // @ts-ignore
 import splashImagePointer from '../../../../assets/splash/illustration-mobile.png'
 // @ts-ignore
@@ -84,7 +84,7 @@ export const SplashScreen = ({
             a.px_5xl,
             a.gap_md,
             a.pb_sm,
-            isNativeTablet && {
+            IS_IPAD && {
               maxWidth: 450,
               width: '100%',
               alignSelf: 'center',

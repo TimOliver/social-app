@@ -19,6 +19,7 @@ export const APP_METADATA = `${BUNDLE_IDENTIFIER.slice(0, 7)} (${__DEV__ ? 'dev'
  */
 export const IS_IOS: boolean = false
 export const IS_ANDROID: boolean = false
+export const IS_IPAD: boolean = false
 export const IS_NATIVE: boolean = false
 export const IS_WEB: boolean = true
 

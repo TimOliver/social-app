@@ -8,13 +8,13 @@ import {PressableScale} from '#/lib/custom-animations/PressableScale'
 import {useMinimalShellFabTransform} from '#/lib/hooks/useMinimalShellTransform'
 import {useWebMediaQueries} from '#/lib/hooks/useWebMediaQueries'
 import {clamp} from '#/lib/numbers'
-import {isNativeTablet} from '#/platform/detection'
 import {useSession} from '#/state/session'
 import {atoms as a, useLayoutBreakpoints, useTheme, web} from '#/alf'
 import {useInteractionState} from '#/components/hooks/useInteractionState'
 import {ArrowTop_Stroke2_Corner0_Rounded as ArrowIcon} from '#/components/icons/Arrow'
 import {CENTER_COLUMN_OFFSET} from '#/components/Layout'
 import {SubtleHover} from '#/components/SubtleHover'
+import {IS_IPAD} from '#/env'
 
 export function LoadLatestBtn({
   onPress,
@@ -42,12 +42,10 @@ export function LoadLatestBtn({
 
   // Adjust height of the fab if we have a session only on mobile web. If we don't have a session, we want to adjust
   // it on both tablet and mobile since we are showing the bottom bar (see createNativeStackNavigatorWithAuth)
-  const showBottomBar = hasSession
-    ? isMobile || isNativeTablet
-    : isTabletOrMobile
+  const showBottomBar = hasSession ? isMobile || IS_IPAD : isTabletOrMobile
 
   const bottomPosition =
-    isTablet && !isNativeTablet
+    isTablet && !IS_IPAD
       ? {bottom: 50}
       : {bottom: clamp(insets.bottom, 15, 60) + 15}
 
@@ -63,7 +61,7 @@ export function LoadLatestBtn({
             ? styles.loadLatestOutOfLine
             : styles.loadLatestInline),
         isTablet &&
-          !isNativeTablet &&
+          !IS_IPAD &&
           (centerColumnOffset
             ? styles.loadLatestInlineOffset
             : styles.loadLatestInline),
