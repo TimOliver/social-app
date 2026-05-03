@@ -16,6 +16,7 @@ import Animated, {
 } from 'react-native-reanimated'
 import {useSafeAreaInsets} from 'react-native-safe-area-context'
 
+import {useReadableInsetStyle} from '#/lib/hooks/useReadableContentInsets'
 import {useEnableMinimalShellModeForScreen} from '#/state/shell'
 import {useShellLayout} from '#/state/shell/shell-layout'
 import {
@@ -85,6 +86,7 @@ export const Content = memo(
   ) {
     const t = useTheme()
     const {footerHeight} = useShellLayout()
+    const insetStyle = useReadableInsetStyle()
     const animatedProps = useAnimatedProps(() => {
       return {
         scrollIndicatorInsets: {
@@ -106,6 +108,7 @@ export const Content = memo(
         style={[scrollViewStyles.common, style]}
         contentContainerStyle={[
           scrollViewStyles.contentContainer,
+          insetStyle,
           contentContainerStyle,
         ]}
         {...props}>
